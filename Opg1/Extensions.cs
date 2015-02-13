@@ -66,20 +66,6 @@ namespace Opg1
                    FirstOrDefault(c => c != null);            // Discard all the children that found nothing
         }
 
-        /// <summary>
-        /// Adds element to the front of a sequence
-        /// </summary>
-        /// <typeparam name="T">Type of <see cref="{T}"/></typeparam>
-        /// <param name="list">the sequence</param>
-        /// <param name="value">value to push on the sequence</param>
-        /// <returns></returns>
-        public static IEnumerable<T> Push<T>(this IEnumerable<T> list, T value)
-        {
-            yield return value;
-            foreach (var elem in list)
-            {
-                yield return elem;
-            }
-        }
+
     }
 }
