@@ -13,7 +13,122 @@
     <edmx:ConceptualModels>
       <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="Model1" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
         <EntityContainer Name="Model1Container" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Inventory" EntityType="Model1.Product" />
+          <EntitySet Name="OrderSet" EntityType="Model1.Order" />
+          <EntitySet Name="PriceSet" EntityType="Model1.Price" />
+          <EntitySet Name="ProductOrderSet" EntityType="Model1.ProductOrder" />
+          <AssociationSet Name="PriceProductOrder" Association="Model1.PriceProductOrder">
+            <End Role="Price" EntitySet="PriceSet" />
+            <End Role="ProductOrder" EntitySet="ProductOrderSet" />
+          </AssociationSet>
+          <AssociationSet Name="OrderProductOrder" Association="Model1.OrderProductOrder">
+            <End Role="Order" EntitySet="OrderSet" />
+            <End Role="ProductOrder" EntitySet="ProductOrderSet" />
+          </AssociationSet>
+          <AssociationSet Name="ProductProductOrder" Association="Model1.ProductProductOrder">
+            <End Role="Product" EntitySet="Inventory" />
+            <End Role="ProductOrder" EntitySet="ProductOrderSet" />
+          </AssociationSet>
+          <AssociationSet Name="ProductPrice" Association="Model1.ProductPrice">
+            <End Role="Product" EntitySet="Inventory" />
+            <End Role="Price" EntitySet="PriceSet" />
+          </AssociationSet>
           </EntityContainer>
+        <EntityType Name="Product">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Type="Int64" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="Name" Nullable="false" />
+          <NavigationProperty Name="InOrders" Relationship="Model1.ProductProductOrder" FromRole="Product" ToRole="ProductOrder" />
+          <NavigationProperty Name="CurrentPrice" Relationship="Model1.ProductPrice" FromRole="Product" ToRole="Price" />
+          <Property Type="Int64" Name="PriceId" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Order">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Type="Int64" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="Tnt" Nullable="true" />
+          <NavigationProperty Name="ProductInOrder" Relationship="Model1.OrderProductOrder" FromRole="Order" ToRole="ProductOrder" />
+          <Property Type="Model1.OrderStatus" Name="Status" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Price">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Type="Int64" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Decimal" Name="value" Nullable="false" />
+          <NavigationProperty Name="ProductOrder" Relationship="Model1.PriceProductOrder" FromRole="Price" ToRole="ProductOrder" />
+          <NavigationProperty Name="Product" Relationship="Model1.ProductPrice" FromRole="Price" ToRole="Product" />
+        </EntityType>
+        <EntityType Name="ProductOrder">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Nullable="false" Type="Int32" />
+          <Property Type="Int64" Name="OrderId" Nullable="false" />
+          <NavigationProperty Name="PriceAtOrder" Relationship="Model1.PriceProductOrder" FromRole="ProductOrder" ToRole="Price" />
+          <Property Type="Int64" Name="PriceId" Nullable="false" />
+          <Property Type="Int64" Name="ProductId" Nullable="false" />
+          <NavigationProperty Name="Order" Relationship="Model1.OrderProductOrder" FromRole="ProductOrder" ToRole="Order" />
+          <NavigationProperty Name="Product" Relationship="Model1.ProductProductOrder" FromRole="ProductOrder" ToRole="Product" />
+        </EntityType>
+        <Association Name="PriceProductOrder">
+          <End Type="Model1.Price" Role="Price" Multiplicity="1" />
+          <End Type="Model1.ProductOrder" Role="ProductOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Price">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductOrder">
+              <PropertyRef Name="PriceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="OrderProductOrder">
+          <End Type="Model1.Order" Role="Order" Multiplicity="1" />
+          <End Type="Model1.ProductOrder" Role="ProductOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Order">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductOrder">
+              <PropertyRef Name="OrderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ProductProductOrder">
+          <End Type="Model1.Product" Role="Product" Multiplicity="1" />
+          <End Type="Model1.ProductOrder" Role="ProductOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductOrder">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ProductPrice">
+          <End Type="Model1.Product" Role="Product" Multiplicity="*" />
+          <End Type="Model1.Price" Role="Price" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="Price">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Product">
+              <PropertyRef Name="PriceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EnumType Name="OrderStatus" UnderlyingType="Byte">
+          <Member Name="Posted" />
+          <Member Name="Accepted" />
+          <Member Name="Completed" />
+          <Member Name="Rejected" />
+          <Member Name="Cancelled" />
+        </EnumType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->

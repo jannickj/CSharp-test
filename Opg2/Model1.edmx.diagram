@@ -5,7 +5,15 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="3439469151cf477f8cd85c4e71d614ad" Name="Diagram1" >
-        </Diagram>
+        <EntityTypeShape EntityType="Model1.Product" Width="2.625" PointX="3.875" PointY="0.625" />
+        <EntityTypeShape EntityType="Model1.Order" Width="1.5" PointX="1.25" PointY="3.125" />
+        <EntityTypeShape EntityType="Model1.Price" Width="1.5" PointX="7.75" PointY="2.25" />
+        <EntityTypeShape EntityType="Model1.ProductOrder" Width="1.5" PointX="4.125" PointY="3.375" />
+        <AssociationConnector Association="Model1.PriceProductOrder" />
+        <AssociationConnector Association="Model1.OrderProductOrder" />
+        <AssociationConnector Association="Model1.ProductProductOrder" />
+        <AssociationConnector Association="Model1.ProductPrice" />
+      </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>
